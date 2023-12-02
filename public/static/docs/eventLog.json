@@ -1,0 +1,159 @@
+{	
+	"paths": {		
+		
+	"1": {
+		"get": {
+			"tags": ["突发事件自动记录"],
+			"summary": "入侵监测",
+			"description": "",
+			"operationId": "",
+			"parameters": [{
+						"name": "陌生人试图进入",
+						"in": "链接视频1",
+						"description": "陌生人试图进入",
+						"required": false,
+						"schema": {
+							"type": "2021-08-25",
+							"format": "",
+							"example": "",
+							"pattern": "",
+							"minLength": 5,
+							"maxLength": "",
+							"items": []
+						},
+						"example": "123"
+					}],
+			"responses": []
+		}
+	},
+
+	"2": {
+		"get": {
+			"tags": ["三防报警"],
+			"summary": "CO2监测",
+			"description": "",
+			"operationId": "",
+			"parameters": [{
+						"name": "浓度超标",
+						"in": "预警预案1",
+						"description": "co2浓度超标",
+						"required": false,
+						"schema": {
+							"type": "2020-12-15",
+							"format": "",
+							"example": "",
+							"pattern": "",
+							"minLength": 5,
+							"maxLength": "",
+							"items": []
+						},
+						"example": "123"
+					}],
+			"responses": []
+		}
+	},
+
+	"3": {
+		"get": {
+			"tags": ["三防报警"],
+			"summary": "温度监测",
+			"description": "",
+			"operationId": "",
+			"parameters": [{
+						"name": "温度过高",
+						"in": "预警预案2",
+						"description": "核心机房温度过高",
+						"required": false,
+						"schema": {
+							"type": "2021-08-25",
+							"format": "",
+							"example": "",
+							"pattern": "",
+							"minLength": 5,
+							"maxLength": "",
+							"items": []
+						},
+						"example": "123"
+					},
+					{
+						"name": "温度变化异常",
+						"in": "预警预案3",
+						"description": "温度突然升高",
+						"required": false,
+						"schema": {
+							"type": "2021-09-25",
+							"format": "",
+							"example": "",
+							"pattern": "",
+							"minLength": 5,
+							"maxLength": "",
+							"items": []
+						},
+						"example": "123"
+					}],
+			"responses": []
+		}
+	},
+
+	"4": {
+		"get": {
+			"tags": ["三防报警"],
+			"summary": "储备水源告警",
+			"description": "",
+			"operationId": "",
+			"parameters": [{
+						"name": "储备水源水位过低",
+						"in": "预警预案5",
+						"description": "储备水源水位低于阈值",
+						"required": false,
+						"schema": {
+							"type": "2021-08-25",
+							"format": "",
+							"example": "",
+							"pattern": "",
+							"minLength": 5,
+							"maxLength": "",
+							"items": []
+						},
+						"example": "123"
+					}],
+			"responses": []
+		}
+	},
+	"5": {
+		"get": {
+			"tags": ["消防监测"],
+			"summary": "烟感",
+			"description": "",
+			"operationId": "",
+			"parameters": [{
+						"name": "储备水源水位过低",
+						"in": "预警预案5",
+						"description": "储备水源水位低于阈值",
+						"required": false,
+						"schema": {
+							"type": "2021-08-25",
+							"format": "",
+							"example": "",
+							"pattern": "",
+							"minLength": 5,
+							"maxLength": "",
+							"items": []
+						},
+						"example": "123"
+					}],
+			"responses": []
+		}
+	},
+	"6": {
+		"get": {
+			"tags": ["消防监测"],
+			"summary": "温感",
+			"description": "",
+			"operationId": "",
+			"parameters": [],
+			"responses": []
+		}
+	}
+	}
+}

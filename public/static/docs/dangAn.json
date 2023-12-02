@@ -1,0 +1,151 @@
+{	
+	"paths": {		
+		
+	"weappapi1": {
+		"get": {
+			"tags": ["指挥所土建工程"],
+			"summary": "地下指挥所",
+			"description": "",
+			"operationId": "",
+			"parameters": [{
+						"name": "建成",
+						"in": "链接文档1",
+						"description": "土建工程完成",
+						"required": false,
+						"schema": {
+							"type": "2021-08-25",
+							"format": "",
+							"example": "",
+							"pattern": "",
+							"minLength": 5,
+							"maxLength": "",
+							"items": []
+						},
+						"example": "123"
+					},
+					{
+						"name": "装修",
+						"in": "链接文档11",
+						"description": "指挥所修缮装修",
+						"required": false,
+						"schema": {
+							"type": "2021-10-25",
+							"format": "",
+							"example": "",
+							"pattern": "",
+							"minLength": 5,
+							"maxLength": "",
+							"items": []
+						},
+						"example": "123"
+					}],
+			"responses": []
+		}
+	},
+
+	"weappapi2": {
+		"get": {
+			"tags": ["指挥所土建工程"],
+			"summary": "地上办公室",
+			"description": "",
+			"operationId": "",
+			"parameters": [{
+						"name": "建成",
+						"in": "链接文档2",
+						"description": "土建工程完成",
+						"required": false,
+						"schema": {
+							"type": "2020-12-15",
+							"format": "",
+							"example": "",
+							"pattern": "",
+							"minLength": 5,
+							"maxLength": "",
+							"items": []
+						},
+						"example": "123"
+					}],
+			"responses": []
+		}
+	},
+
+	"weappapi3": {
+		"get": {
+			"tags": ["设备设施管理"],
+			"summary": "东侧风机",
+			"description": "",
+			"operationId": "",
+			"parameters": [{
+						"name": "装机",
+						"in": "链接文档3",
+						"description": "安装",
+						"required": false,
+						"schema": {
+							"type": "2021-08-25",
+							"format": "",
+							"example": "",
+							"pattern": "",
+							"minLength": 5,
+							"maxLength": "",
+							"items": []
+						},
+						"example": "123"
+					},
+					{
+						"name": "维修",
+						"in": "链接文档4",
+						"description": "风机故障",
+						"required": false,
+						"schema": {
+							"type": "2021-09-25",
+							"format": "",
+							"example": "",
+							"pattern": "",
+							"minLength": 5,
+							"maxLength": "",
+							"items": []
+						},
+						"example": "123"
+					}],
+			"responses": []
+		}
+	},
+
+	"weappapi4": {
+		"get": {
+			"tags": ["设备设施管理"],
+			"summary": "总控室空调",
+			"description": "",
+			"operationId": "",
+			"parameters": [{
+						"name": "装机调试",
+						"in": "链接文档5",
+						"description": "装机运行正常",
+						"required": false,
+						"schema": {
+							"type": "2021-08-25",
+							"format": "",
+							"example": "",
+							"pattern": "",
+							"minLength": 5,
+							"maxLength": "",
+							"items": []
+						},
+						"example": "123"
+					}],
+			"responses": []
+		}
+	}
+	},
+	"components": {
+		"securitySchemes": {
+			"Authorization-Bearer": {
+				"type": "http",
+				"name": "Authorization",
+				"in": "header",
+				"bearerFormat": "JWT",
+				"scheme": "Bearer"
+			}
+		}
+	}
+}
