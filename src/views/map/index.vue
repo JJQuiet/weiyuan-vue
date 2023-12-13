@@ -1,8 +1,8 @@
 <template>
-	<div class="visualizing-demo1 flex-grow relative flex " style="height: 100%;width:100%">
-		<div class=" absolute inset-0">
+	<div class="visualizing-demo1 flex-grow relative flex" style="height: 100%; width: 100%">
+		<div class="absolute inset-0">
 			<!-- 地图 -->
-			<div id="visualizingDemo1" class=" w-full h-full" ></div>
+			<div id="visualizingDemo1" class="w-full h-full"></div>
 			<div class="visualizing-container">
 				<!-- 头部 -->
 				<div class="visualizing-container-head">
@@ -20,8 +20,8 @@
 					<div class="visualizing-container-head-right">
 						<div class="flex flex-row-reverse justify-between">
 							<div class="selectClass flex flex-col w-60">
-								<div class=" h-2 "></div>
-								<el-select 
+								<div class="h-2"></div>
+								<el-select
 									v-model="searchVal"
 									filterable
 									clearable
@@ -32,16 +32,25 @@
 									:loading="searchLoading"
 									@change="remoteChange"
 								>
-									<el-option
-									v-for="item in searchOptArr"
-									:key="item.value"
-									:label="item.label"
-									:value="item.value"
-									/>
+									<el-option v-for="item in searchOptArr" :key="item.value" :label="item.label" :value="item.value" />
 								</el-select>
 							</div>
-							<el-image v-if="isDisplayIcon" class=" ml-16" style="width:40px;"  src="/static/images/display.png" :fit="contain" @click="tapDisplay(false)" />
-							<el-image v-if="!isDisplayIcon" class=" ml-16" style="width:40px;"  src="/static/images/hidedisplay.png" :fit="contain" @click="tapDisplay(true)" />
+							<el-image
+								v-if="isDisplayIcon"
+								class="ml-16"
+								style="width: 40px"
+								src="/static/images/display.png"
+								:fit="contain"
+								@click="tapDisplay(false)"
+							/>
+							<el-image
+								v-if="!isDisplayIcon"
+								class="ml-16"
+								style="width: 40px"
+								src="/static/images/hidedisplay.png"
+								:fit="contain"
+								@click="tapDisplay(true)"
+							/>
 							<!--  -->
 						</div>
 					</div>
@@ -116,40 +125,37 @@
 				</div>
 				-->
 			</div>
-			<el-dialog
-				v-model="dialogVisible"
-				:title="dialogTitle"
-				width="30%"
-			>
-					<el-input v-model="nameInp" placeholder="请输入监控名称" />
-					<el-input v-model="addrInp" placeholder="请输入监控地址" />
+			<el-dialog v-model="dialogVisible" :title="dialogTitle" width="30%">
+				<el-input v-model="nameInp" placeholder="请输入监控名称" />
+				<el-input v-model="addrInp" placeholder="请输入监控地址" />
 				<template #footer>
-				<span class="dialog-footer">
-					<el-button @click="dialogVisible = false">取消</el-button>
-					<el-button v-if="dialogTitle=='修改监控'" type="warning" @click="onTapDelBtn">
-					删除
-					</el-button>
-					<el-button type="primary" @click="onTapTrueBtn">
-					确认
-					</el-button>
-				</span>
+					<span class="dialog-footer">
+						<el-button @click="dialogVisible = false">取消</el-button>
+						<el-button v-if="dialogTitle == '修改监控'" type="warning" @click="onTapDelBtn"> 删除 </el-button>
+						<el-button type="primary" @click="onTapTrueBtn"> 确认 </el-button>
+					</span>
 				</template>
 			</el-dialog>
-			<el-dialog
-				v-model="videoVisible"
-				:title="videoTitle"
-				width="30%"
-				@close="closeVideo"
-			>
-					<HttpFlvPlayer         	
-					v-if="flvurl"
-					ref="videoPlay"
-					:src="flvurl"
-				/> 
+			<el-dialog v-model="videoVisible" :title="videoTitle" width="30%" @close="closeVideo">
+				<!-- <HttpFlvPlayer v-if="flvurl" ref="videoPlay" :src="flvurl" /> -->
+				<div class="photo-list" v-if="photos.length" v-for="photo in photos" :key="photo.id">
+					<div class="photo-container">
+						<!-- <div class="timestamp">{{ photo.photoName }}</div> -->
+						<div class="timestamp">{{ formatPhotoName(photo.photoName) }}</div>
+						<img
+							class="photo"
+							:class="{ enlarged: enlargedPhotoId === photo.id }"
+							:src="photo.photoPath"
+							:alt="photo.photoName"
+							@click="toggleEnlarge(photo.id)"
+						/>
+						<div class="description">{{ photo.photoDescription }}</div>
+					</div>
+				</div>
 				<template #footer>
-				<span class="dialog-footer">
-					<el-button @click="videoVisible = false">取消</el-button>
-				</span>
+					<span class="dialog-footer">
+						<el-button @click="videoVisible = false">取消</el-button>
+					</span>
 				</template>
 			</el-dialog>
 		</div>
@@ -158,7 +164,7 @@
 
 <script lang="ts">
 import HttpFlvPlayer from '/@/components/httpFlvPlayer/index.vue';
-import { toRefs, reactive, onMounted, onUnmounted, getCurrentInstance, defineComponent } from 'vue';
+import { toRefs, ref, reactive, onMounted, onUnmounted, getCurrentInstance, defineComponent } from 'vue';
 import * as echarts from 'echarts';
 import 'echarts/extension/bmap/bmap';
 import { formatDate } from '/@/utils/formatTime';
@@ -177,22 +183,22 @@ import ShfCallUtil from '/@/utils/shf/ShfCallUtil';
 
 export default defineComponent({
 	name: 'visualizingLinkDemo1',
-	components:{HttpFlvPlayer},
+	components: { HttpFlvPlayer },
 	setup() {
 		const { proxy } = getCurrentInstance() as any;
 		const state = reactive({
-			isDisplayIcon:true,
-			displayPhone:"",
-			searchOptArr:[],
-			searchVal:"",
-			searchLoading:false,
-			flvurl:"",
-			videoTitle:"监控：XXXX",
-			videoVisible:false,
-			dialogTitle:"",
-			nameInp:"",
-			addrInp:"",
-			dialogVisible:false,
+			isDisplayIcon: true,
+			displayPhone: '',
+			searchOptArr: [],
+			searchVal: '',
+			searchLoading: false,
+			flvurl: '',
+			videoTitle: '监控：XXXX',
+			videoVisible: false,
+			dialogTitle: '',
+			nameInp: '',
+			addrInp: '',
+			dialogVisible: false,
 			echartsMapList,
 			echartsMapData,
 			echartsMapImgs,
@@ -205,140 +211,150 @@ export default defineComponent({
 				tianxian: 0,
 				shuju: -1,
 				jingdu: '',
-				weidu: '',				
+				weidu: '',
 				haiba: '',
 				sudu: '',
 				fangxiang: '',
 				shifenmiao: '',
 				riyuenian: '',
-			},			
+			},
 			myCharts: [],
-			/////////////////集结点.etc////////////// 
-			zhihuiChe:[],			
-			luxianData:[],
-			luxianDian:[],			
-			
-			ssysOptions: ['集结点','疏散路线','疏散地域','隐蔽地域','保障点','经济目标'],			
-			pagedata:{
-	  			currentPage: 1,
-	        	pageCount: 1000,
-  			},
-			getTblData:{},
-			pageType:'',
-			jjmbReli:[
-				[0, 0, 0], [1, 0, 0], [2, 0, 0],
-				[0, 1, 0], [1, 1, 0], [2, 1, 0],
-				[0, 2, 0],[1, 2, 0], [2, 2, 0],
-				[0, 3, 0],[1, 3, 0], [2, 3, 0],
-				[0, 4, 0],[1, 4, 0],[2, 4, 0], 
-				[0, 5, 0],[1, 5, 0],[2, 5, 0],
-				[0, 6, 0], [1, 6, 0],[2, 6, 0],
-				[0, 7, 0], [1, 7, 0],[2, 7, 0]
-				],
-			ssysCnt:[1, 2, 3, 4, 5],					
+			/////////////////集结点.etc//////////////
+			zhihuiChe: [],
+			luxianData: [],
+			luxianDian: [],
+
+			ssysOptions: ['集结点', '疏散路线', '疏散地域', '隐蔽地域', '保障点', '经济目标'],
+			pagedata: {
+				currentPage: 1,
+				pageCount: 1000,
+			},
+			getTblData: {},
+			pageType: '',
+			jjmbReli: [
+				[0, 0, 0],
+				[1, 0, 0],
+				[2, 0, 0],
+				[0, 1, 0],
+				[1, 1, 0],
+				[2, 1, 0],
+				[0, 2, 0],
+				[1, 2, 0],
+				[2, 2, 0],
+				[0, 3, 0],
+				[1, 3, 0],
+				[2, 3, 0],
+				[0, 4, 0],
+				[1, 4, 0],
+				[2, 4, 0],
+				[0, 5, 0],
+				[1, 5, 0],
+				[2, 5, 0],
+				[0, 6, 0],
+				[1, 6, 0],
+				[2, 6, 0],
+				[0, 7, 0],
+				[1, 7, 0],
+				[2, 7, 0],
+			],
+			ssysCnt: [1, 2, 3, 4, 5],
+			enlargedPhotoId: null,
 		});
-		const mapCameraMap:any = {};
-		const closeVideo = ()=>{
-			state.flvurl = "";
-		}
-		const testlist:any[] = [{value:"Alabama",label:"Alabama"},{value:"Arizona",label:"Arizona"}];
-		const remoteSearch = async(query: string)=>{
+		const mapCameraMap: any = {};
+		const closeVideo = () => {
+			state.flvurl = '';
+		};
+		const testlist: any[] = [
+			{ value: 'Alabama', label: 'Alabama' },
+			{ value: 'Arizona', label: 'Arizona' },
+		];
+		const remoteSearch = async (query: string) => {
 			if (query) {
 				state.searchLoading = true;
-				let res:any = await ShfReqUtil.findAllByName(query);
-				if(res)
-				{
+				let res: any = await ShfReqUtil.findAllByName(query);
+				if (res) {
 					let arr = [];
 					for (const data of res) {
 						arr.push(new CameraSearchVo(data));
 					}
 					(state.searchOptArr as any) = arr;
 				}
-				state.searchLoading  = false;
+				state.searchLoading = false;
 			} else {
-				state.searchOptArr = []
+				state.searchOptArr = [];
 			}
-		}
-		const remoteChange = async(e:any)=>{
+		};
+		const remoteChange = async (e: any) => {
 			let searchVal = state.searchVal;
-			if(!searchVal)return;
+			if (!searchVal) return;
 			for (const opt of state.searchOptArr) {
-				if(searchVal == (opt as any).id)
-				{
-					let lngVal:any = (opt as any).lngVal;
-					let latVal:any = (opt as any).latVal;
-					ShfMapUtil.centerToZoom(lngVal,latVal);
+				if (searchVal == (opt as any).id) {
+					let lngVal: any = (opt as any).lngVal;
+					let latVal: any = (opt as any).latVal;
+					ShfMapUtil.centerToZoom(lngVal, latVal);
 					break;
 				}
 			}
-		}
-		const tapDisplay = async(value:boolean)=>{
+		};
+		const tapDisplay = async (value: boolean) => {
 			state.isDisplayIcon = value;
-			if(value == false)
-			{
+			if (value == false) {
 				ShfMapUtil.hide();
-			}
-			else
-			{
+			} else {
 				ShfMapUtil.display();
 			}
-		}
-		const onTapCallPhone = async()=>{
+		};
+		const onTapCallPhone = async () => {
 			let phone = state.displayPhone;
-			let caller = (window as any)["handCaller"];
-			let call = await ShfCallUtil.call(caller,phone);
-			if(call)
-			{
+			let caller = (window as any)['handCaller'];
+			let call = await ShfCallUtil.call(caller, phone);
+			if (call) {
 				ElMessage({
 					type: 'info',
-					message: '呼叫已发送'
-				})
+					message: '呼叫已发送',
+				});
 			}
-			
-		}
-		const onTapDelBtn = async()=>{
+		};
+		const onTapDelBtn = async () => {
 			let currentPnt = ShfMapUtil.getCurrnetPnt();
-			if(state.dialogTitle  == "添加监控"&&currentPnt.length<=1)return;
+			if (state.dialogTitle == '添加监控' && currentPnt.length <= 1) return;
 			let id = ShfMapUtil.getCurrentId();
-			let item:any = await ShfReqUtil.del(id);
+			let item: any = await ShfReqUtil.del(id);
 
 			ShfMapUtil.delPoint(id);
 
 			state.dialogVisible = false;
-		}
+		};
 
-		const onTapTrueBtn = async()=>{
+		const onTapTrueBtn = async () => {
 			let currentPnt = ShfMapUtil.getCurrnetPnt();
-			if(state.dialogTitle  == "添加监控"&&currentPnt.length<=1)return;
-			if(!state.nameInp)return;
-			if(!state.addrInp)return;
-			if(state.dialogTitle  == "添加监控")
-			{
-				let item:any = await ShfReqUtil.add(state.nameInp,state.addrInp,currentPnt[0],currentPnt[1]);
-				if(!item)return;
+			if (state.dialogTitle == '添加监控' && currentPnt.length <= 1) return;
+			if (!state.nameInp) return;
+			if (!state.addrInp) return;
+			if (state.dialogTitle == '添加监控') {
+				let item: any = await ShfReqUtil.add(state.nameInp, state.addrInp, currentPnt[0], currentPnt[1]);
+				if (!item) return;
 				let vo = new CameraVo().init(item);
-				ShfMapUtil.addPoint(vo.lngVal,vo.latVal,vo.id,vo.cameraName,vo.cameraAddr);
+				ShfMapUtil.addPoint(vo.lngVal, vo.latVal, vo.id, vo.cameraName, vo.cameraAddr);
 				state.dialogVisible = false;
 				mapCameraMap[vo.id] = vo;
 				return;
-			}
-			else
-			{
+			} else {
 				let id = ShfMapUtil.getCurrentId();
-				let vo:CameraVo = mapCameraMap[id];
-				if(!vo)return;
+				let vo: CameraVo = mapCameraMap[id];
+				if (!vo) return;
 				state.dialogVisible = false;
 
-				let item:any = await ShfReqUtil.edit(id,state.nameInp,state.addrInp);
-				if(!item)return;
+				let item: any = await ShfReqUtil.edit(id, state.nameInp, state.addrInp);
+				if (!item) return;
 				let newVo = new CameraVo().init(item);
-				ShfMapUtil.editPoint(newVo.id,newVo.cameraName);
+				ShfMapUtil.editPoint(newVo.id, newVo.cameraName);
 				state.dialogVisible = false;
 				mapCameraMap[newVo.id] = newVo;
 				return;
 			}
-		}
-		
+		};
+
 		// 初始化时间
 		const initTime = () => {
 			state.time.txt = formatDate(new Date(), 'YYYY-mm-dd HH:MM:SS WWW QQQQ ZZZ');
@@ -347,7 +363,7 @@ export default defineComponent({
 			}, 1000);
 		};
 		// echartsMap 将坐标信息和对应物理量的值合在一起
-		const convertData = (data) => {
+		const convertData = (data: any) => {
 			let res = [];
 			for (let i = 0; i < data.length; i++) {
 				let geoCoord = state.echartsMapData[data[i].name];
@@ -361,63 +377,61 @@ export default defineComponent({
 			return res;
 		};
 
-		const procWsInfos = () => {
-					
-		};
+		const procWsInfos = () => {};
 
 		//test start
 		const initTest = () => {
-			console.log('coordtransform:', coordtransform);			
-			state.gnss.jingdu='120.151047';
-			state.gnss.weidu='30.285548';
-			
-			//坐标系转换->wgs84->gcj->bd09							
-			var wgs84togcj02=coordtransform.wgs84togcj02(state.gnss.jingdu*1,state.gnss.weidu*1);						
-			var gcj02tobd09=coordtransform.gcj02tobd09(wgs84togcj02[0],wgs84togcj02[1]);
-			console.log(state.gnss.jingdu*1,state.gnss.weidu*1,gcj02tobd09);			
+			console.log('coordtransform:', coordtransform);
+			state.gnss.jingdu = '120.151047';
+			state.gnss.weidu = '30.285548';
+
+			//坐标系转换->wgs84->gcj->bd09
+			var wgs84togcj02 = coordtransform.wgs84togcj02(state.gnss.jingdu * 1, state.gnss.weidu * 1);
+			var gcj02tobd09 = coordtransform.gcj02tobd09(wgs84togcj02[0], wgs84togcj02[1]);
+			console.log(state.gnss.jingdu * 1, state.gnss.weidu * 1, gcj02tobd09);
 		};
 		//test end
 
 		//初始化websocket
 		const initWebsocket = () => {
 			//构建WebSocket
-		    if (typeof (WebSocket) == "undefined"){
-		        console.log("您的浏览器不支持WebSocket")
-		    }else {
-		    console.log("您的浏览器支持WebSocket")      		
-		    var socketUrl = `ws://${window.location.host}/api/websocket`;
-		    console.log(socketUrl);
-		    /*
+			if (typeof WebSocket == 'undefined') {
+				console.log('您的浏览器不支持WebSocket');
+			} else {
+				console.log('您的浏览器支持WebSocket');
+				var socketUrl = `ws://${window.location.host}/api/websocket`;
+				console.log(socketUrl);
+				/*
 		    if (socket != null){
 		        socket.close();
 		        socket = null;
 		    }*/
 
-		    // let socket = new WebSocket(socketUrl);
+				// let socket = new WebSocket(socketUrl);
 
-		    // //打开事件
-		    // socket.onopen = function () {}
+				// //打开事件
+				// socket.onopen = function () {}
 
-		    // //获取消息事件
-		    // socket.onmessage = function (messageEvent){
-		    //     //addMsg(messageEvent.data);
-		    //     //console.log(messageEvent.data);
-		    //     procWsInfos(messageEvent.data);
-		    // }
+				// //获取消息事件
+				// socket.onmessage = function (messageEvent){
+				//     //addMsg(messageEvent.data);
+				//     //console.log(messageEvent.data);
+				//     procWsInfos(messageEvent.data);
+				// }
 
-		    // //关闭事件
-		    // socket.onclose = function () {
-		    //     console.log("ws已关闭");
-		    //     procWsInfos("ws已关闭");
-		    // }
+				// //关闭事件
+				// socket.onclose = function () {
+				//     console.log("ws已关闭");
+				//     procWsInfos("ws已关闭");
+				// }
 
-		    // //发生错误事件
-		    // socket.onerror = function () {
-		    //     console.log("ws发生了错误");		        
-		    // }
+				// //发生错误事件
+				// socket.onerror = function () {
+				//     console.log("ws发生了错误");
+				// }
 			}
 		};
-		
+
 		// 初始化 echartsMap（地图上的点）
 		const initEchartsMap = () => {
 			let documDemo1 = document.getElementById('visualizingDemo1');
@@ -431,8 +445,8 @@ export default defineComponent({
 						//let item = state.echartsMapImgs.find((v) => v.name === params.name);
 						// let item = state.getTblData.data.find((v) => v.title == params.name);
 						// let pointId = params.data.pointId
-						let name = params.data.name
-						let item = {title:name,lng:params.data.value[0],lat:params.data.value[1],addr:params.data.addr};
+						let name = params.data.name;
+						let item = { title: name, lng: params.data.value[0], lat: params.data.value[1], addr: params.data.addr };
 						let html = `<div style="width: 240px">
 							<div style="display: flex; align-items: center">
 								<img src="/static/images/xx.jpg" style="width: 50px; height: 50px; border-radius: 100%; position: relative; border: 4px solid #ffffff; margin-left: -4px" />
@@ -465,7 +479,7 @@ export default defineComponent({
 				},
 				color: ['#ea7ccc'],
 				bmap: {
-					center: (window as any)["mapCenter"],//东平
+					center: (window as any)['mapCenter'], //东平
 					zoom: 16,
 					roam: true,
 					mapStyle: {},
@@ -474,10 +488,10 @@ export default defineComponent({
 					{
 						name: '指挥车',
 						type: 'scatter',
-						coordinateSystem: 'bmap',						
-						data:state.zhihuiChe,						
-						symbol: "image://static/images/zhihuiche.png",						
-						symbolSize:40,
+						coordinateSystem: 'bmap',
+						data: state.zhihuiChe,
+						symbol: 'image://static/images/zhihuiche.png',
+						symbolSize: 40,
 						encode: {
 							value: 2,
 						},
@@ -485,46 +499,46 @@ export default defineComponent({
 							formatter: '{b}',
 							position: 'right',
 							show: true,
-							color:'#ff0000',
-							fontSize:14,
+							color: '#ff0000',
+							fontSize: 14,
 						},
 					},
 					{
 						name: '路线点',
 						type: 'scatter',
-						coordinateSystem: 'bmap',						
-						data:state.luxianDian,			
-						symbol: "image://static/images/end_e68ad9a.png",						
-						symbolSize:10,						
+						coordinateSystem: 'bmap',
+						data: state.luxianDian,
+						symbol: 'image://static/images/end_e68ad9a.png',
+						symbolSize: 10,
 						encode: {
 							value: 2,
-						},						
+						},
 						label: {
 							formatter: '{b}',
 							//position: 'right',
 							position: 'top',
 							show: false,
-							color:'#ff0000',
-							fontSize:14,
-						},						
-					},					
+							color: '#ff0000',
+							fontSize: 14,
+						},
+					},
 					{
 						name: '轨迹路线',
 						type: 'lines',
 						coordinateSystem: 'bmap',
-						polyline:true,
-						// 统一的样式设置	
+						polyline: true,
+						// 统一的样式设置
 						lineStyle: {
-				            color: '#00ff00',					            
-				            opacity: 0.8,
-				            width: 10,
-				        },
-						data:state.luxianData,					
-					},					
+							color: '#00ff00',
+							opacity: 0.8,
+							width: 10,
+						},
+						data: state.luxianData,
+					},
 				],
 			};
-			
-			myChart.setOption(option,true);
+
+			myChart.setOption(option, true);
 			state.myCharts.push(myChart);
 			// 地图
 			const map = myChart.getModel().getComponent('bmap').getBMap();
@@ -535,12 +549,12 @@ export default defineComponent({
 			// eslint-disable-next-line no-undef
 			map.setMapType(BMAP_HYBRID_MAP);
 			//lhc add begin
-			console.log("+++++++++++++++++++++++++");
-			map.setMinZoom((window as any)["mapMinZoom"]);
-			map.setMaxZoom((window as any)["mapMaxZoom"]);			
-			map.enableScrollWheelZoom(true);//启用滚轮放大缩小，默认禁用。
-			map.enableDragging();//启用地图拖拽，默认启用。
-			ShfMapUtil.init(map,new BMap.Point(104.00943, 30.7209),state.myCharts[0],state.zhihuiChe,state,this,editCamera,clickCamera);
+			console.log('+++++++++++++++++++++++++');
+			map.setMinZoom((window as any)['mapMinZoom']);
+			map.setMaxZoom((window as any)['mapMaxZoom']);
+			map.enableScrollWheelZoom(true); //启用滚轮放大缩小，默认禁用。
+			map.enableDragging(); //启用地图拖拽，默认启用。
+			ShfMapUtil.init(map, new BMap.Point(104.00943, 30.7209), state.myCharts[0], state.zhihuiChe, state, this, editCamera, clickCamera);
 			/*
 			map.enableDoubleClickZoom();//启用双击放大，默认启用。
 			map.enableKeyboard();//启用键盘操作，默认禁用。键盘的上、下、左、右键可连续移动地图。同时按下其中两个键可使地图进行对角移动。PgUp、PgDn、Home和End键会使地图平移其1/2的大小。+、-键会使地图放大或缩小一级。
@@ -585,14 +599,10 @@ export default defineComponent({
 				// eslint-disable-next-line no-undef
 				map.centerAndZoom(new BMap.Point(104.00943, 30.7209), 16);				
 			});*/
-		};		
-		
-		const jjLeibie=[
-			    '通信类','能源动力','交通枢纽','军工类',
-			    '生命线','次生灾害',	    '金融类','工矿化工'
-		];		
-					
-		
+		};
+
+		const jjLeibie = ['通信类', '能源动力', '交通枢纽', '军工类', '生命线', '次生灾害', '金融类', '工矿化工'];
+
 		// 批量设置 echarts resize
 		const initEchartsResize = () => {
 			window.addEventListener('resize', () => {
@@ -601,36 +611,92 @@ export default defineComponent({
 				}
 			});
 		};
-		const getList= async ()=>{
-			let list:any = await ShfReqUtil.list();
-			if(!list)return;
+		const getList = async () => {
+			let list: any = await ShfReqUtil.list();
+			if (!list) return;
 			for (const item of list) {
 				let vo = new CameraVo().init(item);
-				ShfMapUtil.addPoint(vo.lngVal,vo.latVal,vo.id,vo.cameraName,vo.cameraAddr);
+				ShfMapUtil.addPoint(vo.lngVal, vo.latVal, vo.id, vo.cameraName, vo.cameraAddr);
 				mapCameraMap[vo.id] = vo;
 			}
-		}
-		const editCamera = (that:any)=>{
-			 let id = ShfMapUtil.getCurrentId();
-			 let vo:CameraVo = mapCameraMap[id];
-			 if(!vo)return;
-			  state.dialogTitle = "修改监控";
-     		 state.dialogVisible = true;
-			 state.addrInp = vo.cameraAddr;
-			 state.nameInp = vo.cameraName;
-
-		}
-		const clickCamera = (that:any)=>{
-			 let id = ShfMapUtil.getCurrentId();
-			 let vo:CameraVo = mapCameraMap[id];
-			 if(!vo)return;
-			 state.videoVisible = true;
-      		 state.flvurl = (window as any)["rstpUrl"]+vo.cameraAddr;
+		};
+		const editCamera = (that: any) => {
+			let id = ShfMapUtil.getCurrentId();
+			let vo: CameraVo = mapCameraMap[id];
+			if (!vo) return;
+			state.dialogTitle = '修改监控';
+			state.dialogVisible = true;
+			state.addrInp = vo.cameraAddr;
+			state.nameInp = vo.cameraName;
+		};
+		const clickCamera = async (that: any) => {
+			let id = ShfMapUtil.getCurrentId();
+			let vo: CameraVo = mapCameraMap[id];
+			await fetchPhotos(vo.cameraName);
+			if (!vo) return;
+			state.videoVisible = true;
+			state.flvurl = (window as any)['rstpUrl'] + vo.cameraAddr;
 			//  state.flvurl = "http://localhost:8800/test.flv";
-			 state.displayPhone = vo.cameraAddr;
-			 state.videoTitle = vo.cameraName;
+			state.displayPhone = vo.cameraAddr;
+			state.videoTitle = vo.cameraName;
+		};
+		const webSocket = ref<WebSocket | null>(null); // 指定类型为WebSocket或null
+		const locationData = ref({ latitude: 0, longitude: 0 });
+		// 创建WebSocket连接
+		const connectWebSocket = () => {
+			// webSocket.value = new WebSocket('ws://192.168.0.113:8080/ws');
+			webSocket.value = new WebSocket('ws://localhost:8080/ws');
+			webSocket.value.onopen = () => {
+				// 处理连接建立
+				console.log('WebSocket connection established');
+			};
+			webSocket.value.onmessage = (event) => {
+				// 当从服务器接收到消息时处理
+				const data = JSON.parse(event.data);
+				locationData.value = { latitude: data.latitude, longitude: data.longitude };
+			};
 
-		}
+			webSocket.value.onclose = (event) => {
+				// 处理连接关闭
+				console.log('WebSocket connection closed:', event);
+			};
+
+			webSocket.value.onerror = (error) => {
+				// 处理错误
+				console.error('WebSocket error:', error);
+			};
+		};
+		const photos = ref([]);
+		const fetchPhotos = async (uploaderName: string) => {
+			try {
+				const response = await fetch(`http://localhost:8080/getPhotos?uploaderName=${encodeURIComponent(uploaderName)}`);
+				// const response = await fetch(`http://192.168.0.113:8080/getPhotos?uploaderName=${encodeURIComponent(uploaderName)}`);
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				const res = await response.json();
+				photos.value = res;
+				// photos.value = await response.json();
+			} catch (error) {
+				console.error('Error fetching photos:', error);
+			}
+		};
+		const formatPhotoName = (photoName: any) => {
+			// 匹配格式为 "20231207_224553.jpg" 的文件名
+			const match = photoName.match(/(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})/);
+
+			if (match) {
+				// 构建一个更可读的日期时间字符串
+				return `${match[1]}-${match[2]}-${match[3]} ${match[4]}:${match[5]}`;
+			}
+
+			// 如果格式不匹配，返回原始字符串
+			return photoName;
+		};
+
+		const toggleEnlarge = (id: any) => {
+			state.enlargedPhotoId = state.enlargedPhotoId === id ? null : id;
+		};
 		// 页面加载时
 		onMounted(async () => {
 			initTime();
@@ -644,18 +710,18 @@ export default defineComponent({
 			//await initVisualizingContentRightBottom();
 			await initEchartsResize();
 			//初始化websocket
-			initWebsocket();
+			// initWebsocket();
 
 			getList();
 			//temptest
 			//initTest();
 		});
-		
+
 		// 页面卸载时
 		onUnmounted(() => {
 			window.clearInterval(state.time.fun);
 			for (let i = 0; i < state.myCharts.length; i++) {
-					state.myCharts[i].dispose();
+				state.myCharts[i].dispose();
 			}
 			state.myCharts = [];
 		});
@@ -667,17 +733,20 @@ export default defineComponent({
 			remoteChange,
 			onTapCallPhone,
 			onTapDelBtn,
-			tapDisplay
+			tapDisplay,
+			photos,
+			toggleEnlarge,
+			formatPhotoName,
 		};
 	},
 });
 </script>
 
 <style scoped lang="scss">
- /* 改变input框背景颜色 */
+/* 改变input框背景颜色 */
 
 // ::v-deep .selectClass .el-input__inner {
-//   background-color: #d5ffff !important; 
+//   background-color: #d5ffff !important;
 // }
 // 左右两侧图表宽度
 $lrWidth: 288px;
@@ -994,6 +1063,47 @@ $titleWidth: 240px;
 		}
 	}
 }
+.photo-container {
+	position: relative;
+	cursor: pointer;
+}
 
+.timestamp {
+	position: absolute;
+	top: 5px;
+	left: 5px;
+	background-color: rgba(0, 0, 0, 0.5);
+	color: white;
+	padding: 5px;
+}
 
+.description {
+	display: none;
+	position: absolute;
+	bottom: 5px;
+	left: 5px;
+	background-color: rgba(0, 0, 0, 0.7);
+	color: white;
+	padding: 5px;
+	z-index: 10;
+}
+.photo:hover + .description {
+	display: block;
+}
+
+.photo {
+	width: 80%;
+	// transition: transform 0.3s ease;
+}
+
+.enlarged {
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%) scale(1);
+	max-width: 100%;
+	max-height: 100%;
+	z-index: 1000;
+	object-fit: contain;
+}
 </style>

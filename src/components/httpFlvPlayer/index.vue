@@ -3,7 +3,7 @@
     <video :id="id" v-show="!loading">
     </video>
     <div class="loading" v-if="loading">
-      <img src="/src/assets/svgicon/svg-loaders/three-dots.svg" width="64" alt="">
+      <!-- <img src="/src/assets/svgicon/svg-loaders/three-dots.svg" width="64" alt=""> -->
       <span class="tips">加载中...</span>
     </div>
     <div class="player-tools-box">

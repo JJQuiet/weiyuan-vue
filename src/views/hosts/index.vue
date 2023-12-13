@@ -87,7 +87,7 @@ import FormReq from '/@/utils/shf/FormReq';
 import { useRouter } from 'vue-router';
 import GlobalData from '/@/utils/shf/GlobalData';
 import mittBus from '/@/utils/mitt';
-import { fa } from 'element-plus/es/locale';
+// import { fa } from 'element-plus/es/locale';
 import WarnReq from '/@/utils/shf/WarnReq';
 import GroupModel from '/@/utils/shf/model/GroupModel';
 import TipTool from '/@/utils/unit/TipTool';
