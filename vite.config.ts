@@ -20,7 +20,8 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
 		plugins: [vue(), vueSetupExtend(), viteCompression(), JSON.parse(env.VITE_OPEN_CDN) ? buildConfig.cdn() : null],
 		root: process.cwd(),
 		resolve: { alias },
-		base: mode.command === 'serve' ? './' : env.VITE_PUBLIC_PATH,
+		base:  './',
+		// base: mode.command === 'serve' ? './' : env.VITE_PUBLIC_PATH,
 		optimizeDeps: { exclude: ['vue-demi'] },
 		server: {
 			host: '0.0.0.0',
