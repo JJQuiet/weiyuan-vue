@@ -152,6 +152,13 @@
 						<div class="description">{{ photo.photoDescription }}</div>
 					</div>
 				</div>
+				<div class="video-list" v-if="videos.length" v-for="video in videos" :key="video.id">
+					<div class="video-container">
+						<div class="timestamp">{{ formatVideoName(video.videoName) }}</div>
+						<video :src="video.videoPath" controls></video>
+						<div class="video-description">{{ video.videoDescription }}</div>
+					</div>
+				</div>
 				<template #footer>
 					<span class="dialog-footer">
 						<el-button @click="videoVisible = false">取消</el-button>
@@ -325,7 +332,6 @@ export default defineComponent({
 
 			state.dialogVisible = false;
 		};
-
 		const onTapTrueBtn = async () => {
 			let currentPnt = ShfMapUtil.getCurrnetPnt();
 			if (state.dialogTitle == '添加监控' && currentPnt.length <= 1) return;
@@ -354,7 +360,6 @@ export default defineComponent({
 				return;
 			}
 		};
-
 		// 初始化时间
 		const initTime = () => {
 			state.time.txt = formatDate(new Date(), 'YYYY-mm-dd HH:MM:SS WWW QQQQ ZZZ');
@@ -376,9 +381,7 @@ export default defineComponent({
 			}
 			return res;
 		};
-
 		const procWsInfos = () => {};
-
 		//test start
 		const initTest = () => {
 			console.log('coordtransform:', coordtransform);
@@ -391,7 +394,6 @@ export default defineComponent({
 			console.log(state.gnss.jingdu * 1, state.gnss.weidu * 1, gcj02tobd09);
 		};
 		//test end
-
 		//初始化websocket
 		const initWebsocket = () => {
 			//构建WebSocket
@@ -431,7 +433,6 @@ export default defineComponent({
 				// }
 			}
 		};
-
 		// 初始化 echartsMap（地图上的点）
 		const initEchartsMap = () => {
 			let documDemo1 = document.getElementById('visualizingDemo1');
@@ -447,7 +448,7 @@ export default defineComponent({
 						// let pointId = params.data.pointId
 						let name = params.data.name;
 						let item = { title: name, lng: params.data.value[0], lat: params.data.value[1], addr: params.data.addr };
-						let html = `<div style="width: 240px">
+					let html = `<div style="width: 240px">
 							<div style="display: flex; align-items: center">
 								<img src="/static/images/xx.jpg" style="width: 50px; height: 50px; border-radius: 100%; position: relative; border: 4px solid #ffffff; margin-left: -4px" />
 								<div
@@ -537,7 +538,6 @@ export default defineComponent({
 					},
 				],
 			};
-
 			myChart.setOption(option, true);
 			state.myCharts.push(myChart);
 			// 地图
@@ -600,9 +600,7 @@ export default defineComponent({
 				map.centerAndZoom(new BMap.Point(104.00943, 30.7209), 16);				
 			});*/
 		};
-
 		const jjLeibie = ['通信类', '能源动力', '交通枢纽', '军工类', '生命线', '次生灾害', '金融类', '工矿化工'];
-
 		// 批量设置 echarts resize
 		const initEchartsResize = () => {
 			window.addEventListener('resize', () => {
@@ -633,6 +631,7 @@ export default defineComponent({
 			let id = ShfMapUtil.getCurrentId();
 			let vo: CameraVo = mapCameraMap[id];
 			await fetchPhotos(vo.cameraName);
+			await fetchVideos(vo.cameraName);
 			if (!vo) return;
 			state.videoVisible = true;
 			state.flvurl = (window as any)['rstpUrl'] + vo.cameraAddr;
@@ -689,13 +688,39 @@ export default defineComponent({
 				// 构建一个更可读的日期时间字符串
 				return `${match[1]}-${match[2]}-${match[3]} ${match[4]}:${match[5]}`;
 			}
-
 			// 如果格式不匹配，返回原始字符串
 			return photoName;
 		};
-
 		const toggleEnlarge = (id: any) => {
 			state.enlargedPhotoId = state.enlargedPhotoId === id ? null : id;
+		};
+		const videos = ref([]);
+		const fetchVideos = async (uploaderName: string) => {
+			try {
+				const response = await fetch(`http://localhost:8080/getVideos?uploaderName=${encodeURIComponent(uploaderName)}`);
+				// const response = await fetch(`http://
+
+				if (!response.ok) {
+					throw new Error('Network response was not ok');
+				}
+				videos.value = await response.json();
+			} catch (error) {
+				console.error('Error fetching videos:', error);
+			}
+		};
+		const formatVideoName = (videoName: any) => {
+			// 匹配格式为 "VID_20231207_224553.mp4" 的文件名
+			const match = videoName.match(/VID_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})/);
+
+			if (match) {
+				// 构建一个更可读的日期时间字符串
+				return `${match[1]}-${match[2]}-${match[3]} ${match[4]}:${match[5]}`;
+			}else{
+				console.log("视频格式不匹配");
+			}
+				
+			// 如果格式不匹配，返回原始字符串
+			return videoName;
 		};
 		// 页面加载时
 		onMounted(async () => {
@@ -737,9 +762,11 @@ export default defineComponent({
 			photos,
 			toggleEnlarge,
 			formatPhotoName,
+			videos,
+			formatVideoName,
 		};
 	},
-});
+})
 </script>
 
 <style scoped lang="scss">
@@ -1063,10 +1090,11 @@ $titleWidth: 240px;
 		}
 	}
 }
-.photo-container {
+.photo-container,.video-container {
 	position: relative;
 	cursor: pointer;
 }
+
 
 .timestamp {
 	position: absolute;
@@ -1087,8 +1115,25 @@ $titleWidth: 240px;
 	padding: 5px;
 	z-index: 10;
 }
+.video-description {
+	display: none;
+	position: absolute;
+	top: 5px;
+	right: 20%;
+	background-color: rgba(0, 0, 0, 0.7);
+	color: white;
+	padding: 5px;
+	z-index: 10;
+}
+
 .photo:hover + .description {
 	display: block;
+}
+video:hover + .video-description {
+	display: block;
+}
+video {
+	width: 80%;
 }
 
 .photo {
